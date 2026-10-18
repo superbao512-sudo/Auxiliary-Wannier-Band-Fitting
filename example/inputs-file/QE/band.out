@@ -1,0 +1,58 @@
+
+     Program BANDS v.7.3.1 starts on 29May2026 at 13:41: 1 
+
+     This program is part of the open-source Quantum ESPRESSO suite
+     for quantum simulation of materials; please cite
+         "P. Giannozzi et al., J. Phys.:Condens. Matter 21 395502 (2009);
+         "P. Giannozzi et al., J. Phys.:Condens. Matter 29 465901 (2017);
+         "P. Giannozzi et al., J. Chem. Phys. 152 154105 (2020);
+          URL http://www.quantum-espresso.org", 
+     in publications or presentations arising from this work. More details at
+     http://www.quantum-espresso.org/quote
+
+     Parallel version (MPI), running on    56 processors
+
+     MPI processes distributed on     1 nodes
+     R & G space division:  proc/nbgrp/npool/nimage =      56
+     174334 MiB available memory on the printing compute node when the environment starts
+ 
+
+     Reading xml data from directory:
+
+     ./tmp/Te.save/
+
+     IMPORTANT: XC functional enforced from input :
+     Exchange-correlation= PBE
+                           (   1   4   3   4   0   0   0)
+     Any further DFT definition will be discarded
+     Please, verify this is what you really want
+
+ 
+     Parallelization info
+     --------------------
+     sticks:   dense  smooth     PW     G-vecs:    dense   smooth      PW
+     Min          42      24      6                 2278      954     140
+     Max          43      25      7                 2287      959     149
+     Sum        2395    1345    379               127827    53497    8151
+ 
+     Using Slab Decomposition
+ 
+     Reading collected, re-writing distributed wavefunctions
+     high-symmetry point:  0.0000 0.0000 0.0000   x coordinate   0.0000
+     high-symmetry point:  0.0000-0.0000 0.3691   x coordinate   0.3691
+     high-symmetry point:  0.3333 0.5773 0.3691   x coordinate   1.0358
+     high-symmetry point:  0.3333 0.5773 0.0000   x coordinate   1.4049
+     high-symmetry point:  0.0000 0.0000 0.0000   x coordinate   2.0716
+     high-symmetry point:  0.5000 0.2887 0.0000   x coordinate   2.6490
+
+     Plottable bands (eV) written to file band.dat.gnu
+     Bands written to file band.dat
+ 
+     BANDS        :      2.66s CPU      3.11s WALL
+
+ 
+   This run was terminated on:  13:41: 5  29May2026            
+
+=------------------------------------------------------------------------------=
+   JOB DONE.
+=------------------------------------------------------------------------------=

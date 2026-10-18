@@ -1,0 +1,117 @@
+# =============================================================
+# input.dat for Auxiliary Wannier Band Fitting
+# =============================================================
+# 本文件是辅助 Wannier 能带拟合程序的总控制文件。
+# 程序启动后首先读取本文件，并根据这里的设置决定读取哪个后端、执行哪个任务、输出哪些文件。
+# 所有相对路径默认相对于当前运行目录；绝对路径会被直接使用。
+# 所有能量默认单位为 eV；所有图示数据默认使用未扣除费米能级的绝对能量。
+# EPW是基于QE计算的能带和DOS分析的，故功能一和功能二输入参数一样。
+
+# -------------------------------------------------------------
+# [general]：全局控制区
+# -------------------------------------------------------------
+backend = VASP                         # 当前解析的数据后端；允许值为 VASP、QE、EPW。
+input_root = ./inputs-file             # 输入文件根目录；相对于 user_work，程序会在该目录下寻找 VASP、QE、EPW 子目录。
+output_root = ./outputs-file           # 输出文件根目录；相对于 user_work，结果写入该目录下对应后端子目录。
+task = all                             # projection / band / all。
+
+# -------------------------------------------------------------
+# 功能一、费米面附近轨道贡献参数
+# -------------------------------------------------------------
+structure_file = auto                  # VASP 默认 POSCAR/CONTCAR；QE 默认 scf.in。
+formula = auto                         # auto 表示从结构文件自动解析，也可手动写入。
+is_2d_material = auto                  # 预留参数：二维材料判断。
+vacuum_axis = auto                     # 预留参数：二维材料真空方向。
+fermi_interval = -2 2                  # PDOS 积分窗口：[E_F - 2 eV, E_F + 2 eV]。
+projection_threshold_1 = 0.85          # 推荐方案一累计贡献阈值。
+projection_threshold_2 = 0.95          # 推荐方案二累计贡献阈值。
+orbital_anisotropy_ratio = 3.0         # 分轨道各向异性阈值。
+
+# -------------------------------------------------------------
+# [vasp]：VASP 文件读取参数
+# -------------------------------------------------------------
+vasp_structure_file = auto             # auto 表示自动搜索 POSCAR 或 CONTCAR。
+vasp_fermi_energy = manual,OUTCAR      # manual 优先，其次 OUTCAR。
+fermi_energy = 4                    # 手动费米能级；auto 表示从输出文件读取。
+vasp_pdos = PDOS_*.dat                 # VASP PDOS 文件匹配规则。
+vasp_outcar_file = auto                # auto 表示自动查找 OUTCAR。
+spin_mode = auto                       # auto 表示从文件判断。
+
+# -------------------------------------------------------------
+# [qe]：QE / EPW 文件读取参数
+# -------------------------------------------------------------
+qe_structure_file = scf.in             # QE 结构信息来源。
+qe_fermi_energy = manual,scf.out       # manual 优先，其次 scf.out。
+qe_scf_in = auto                       # auto 表示自动搜索 scf.in。
+qe_scf_out = auto                      # auto 表示自动搜索 scf.out。
+qe_pdos = auto                         # auto 表示自动匹配 *.pdos.pdos_atm* 文件。
+
+# -------------------------------------------------------------
+# 功能二、拟合能带建议参数
+# -------------------------------------------------------------
+min_gap_threshold = 0.05               # 费米能级下方空带区域最小间隙。
+num_band = auto                        # 功能二手动参考能带数量；功能一输出不存在时可写入整数，如 12。
+extra_bands_for_diswin = 8             # dis_win 额外包含能带数。
+above_fermi_ratio = 0.30               # 规则二中费米能级以上目标能带比例。
+force_rule = auto                      # auto / rule1 / rule2。
+
+# -------------------------------------------------------------
+# 功能二、能带画图参数
+# -------------------------------------------------------------
+band_plot_ymin = auto                  # 能带图纵坐标下限；auto 表示自动。
+band_plot_ymax =  auto                 # 能带图纵坐标上限；auto 表示自动。
+band_plot_width = 7.2                  # 能带图宽度，单位 inch。
+band_plot_height = 4.8                 # 能带图高度，单位 inch。
+band_plot_linewidth = 0.65             # 能带线宽。
+band_plot_dpi = 300                    # 能带图输出分辨率。
+band_plot_show_klabels = true          # 是否显示高对称点标签。
+band_plot_show_grid = true             # 是否显示高对称点竖线。
+
+# -------------------------------------------------------------
+# [vasp]：VASP 能带参数
+# -------------------------------------------------------------
+vasp_band_file = auto                  # auto 表示自动查找 BAND.dat 或 Band.dat。
+vasp_eigenval_file = auto              # auto 表示自动查找 EIGENVAL。
+vasp_klabels_file = auto               # auto 表示自动查找 KLABELS。
+vasp_kpoints_file = auto               # auto 表示自动查找 KPOINTS。
+vasp_num_bands = auto                  # auto 表示自动统计能带数。
+
+# -------------------------------------------------------------
+# [qe]：QE / EPW 能带参数
+# -------------------------------------------------------------
+qe_band_gnu = auto                     # auto 表示自动寻找 band.dat.gnu。
+qe_kpath_file = auto                   # auto 表示自动寻找 band.out、bands.out、fit.in。
+qe_num_bands = auto                    # auto 表示自动统计能带数。
+
+# -------------------------------------------------------------
+# 功能三、拟合质量分析
+# -------------------------------------------------------------
+[read dat]
+vasp_fit_band = auto     # VASP 模式默认读取：DFT 本征能带 BAND.dat；Wannier 拟合能带 *_band.dat。
+qe_fit_band = auto       # QE 模式默认读取：DFT 本征能带 band.dat.gnu；Wannier 拟合能带 *_band.dat。
+epw_fit_band = auto      # EPW 模式默认读取：DFT 本征能带 band.dat.gnu；Wannier 拟合能带 *_band.dat。
+
+[fit_check]
+enable = true                   # 是否启用拟合质量检查；true 表示读取 DFT 与 Wannier 能带并计算误差，false 表示只给参数建议不做对比。
+fit_fermi_energy = auto         # 功能三使用的费米能级；auto 表示读取功能一/二输出，也可手动写入数值，如 5.9512。
+align_x = auto                  # Wannier 与 DFT 能带横坐标缩放因子；auto 表示自动估计，也可手动写入如 0.985，用于解决横坐标长度不一致问题。
+align_x_method = endpoint       # 横坐标自动对齐方法；endpoint 表示用两端长度比例，least_squares 表示用最小二乘匹配，highsym 表示用高对称点位置匹配。
+align_y = false                 # 是否允许能量整体平移；一般应为 false，拟合质量默认使用绝对能量标尺。
+metric_energy_min = auto        # 拟合误差统计能量下限，单位 eV；auto 表示使用完整绝对能量范围。
+metric_energy_max = auto        # 拟合误差统计能量上限，单位 eV；auto 表示使用完整绝对能量范围。
+metric_focus = fermi            # 拟合误差关注区域；fermi 表示重点检查费米附近，full 表示检查全显示窗口，selected 表示只检查选定能带。
+near_fermi_window = 1           # 费米能级附近统计窗口半宽，单位 eV；使用 E_F +/- near_fermi_window。
+fermi_tolerance = 0.02          # 费米交叉容许误差，单位 eV；用于判断 Wannier 是否正确复现穿过费米能级的能带。
+max_allowed_rmse = 0.05         # 目标窗口允许的最大 RMSE，单位 eV；低于该值可认为整体拟合较好。
+max_allowed_near_fermi_error = 0.03  # 费米附近允许的最大误差，单位 eV。
+max_allowed_crossing_shift = 0.03    # 费米面交叉位置允许偏移；可按横坐标归一化距离或等效能量判断，超过该值应标记为 warning 或 bad。
+check_band_crossing_count = true     # 是否检查穿过费米能级的能带条数是否一致；true 表示若 DFT 与 Wannier 费米交叉数量不同，应判为严重问题。
+
+# 画图参数
+plot_energy_min = auto           # 能带图显示能量下限，单位 eV；auto 表示按绝对能量数据自动确定。
+plot_energy_max = auto         # 能带图显示能量上限，单位 eV；auto 表示按绝对能量数据自动确定。
+plot_dpi = 300                  # png 图片分辨率。
+plot_format_png = true          # 是否输出 png 图片。
+plot_format_pdf = true          # 是否输出 pdf 图片。
+plot_show_fermi = true          # 是否在图中绘制真实 Fermi energy 的水平参考线。
+plot_show_error_zero = true     # 是否在误差图中绘制误差为 0 的水平参考线。
